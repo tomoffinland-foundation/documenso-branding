@@ -134,24 +134,21 @@ replacement_signin = """      children: [signupError && /* @__PURE__ */ jsx(Aler
 if target_signin in content:
     content = content.replace(target_signin, replacement_signin, 1)
 
-# 10. server-rendered sign-in footer: AGPL-3.0 §13 source offer (ADR-017, WB-4B). Identical to step 3b in patch_brand.py.
+# 10. server-rendered sign-in footer "Powered by Documenso (AGPL-3.0)" → this change set (AGPL-3.0 §13 source offer, ADR-017,
+#     WB-4B). Identical to step 3b in patch_brand.py. Replaces the earlier two-part footer if present. Idempotent.
 SOURCE_URL = "https://github.com/tomoffinland-foundation/documenso-branding"
-target_footer = """                className: "text-documenso-700 duration-200 hover:opacity-70"
-              })
-            }
-          }
-        })
-      })]
+_tail = """      })]
     })
   });
 });
 const route107 = """
-footer_ssr = """                className: "text-documenso-700 duration-200 hover:opacity-70"
+_signup_end = """                className: "text-documenso-700 duration-200 hover:opacity-70"
               })
             }
           }
         })
-      }), /* @__PURE__ */ jsxs("p", {
+"""
+footer_old = """      }), /* @__PURE__ */ jsxs("p", {
         className: "mt-6 text-center text-muted-foreground text-xs",
         children: ["Powered by Documenso (AGPL-3.0) \u00b7 ", /* @__PURE__ */ jsx("a", {
           href: "SOURCE_URL",
@@ -160,15 +157,24 @@ footer_ssr = """                className: "text-documenso-700 duration-200 hove
           className: "underline",
           children: "Source of this deployment\u2019s modifications"
         })]
-      })]
-    })
-  });
-});
-const route107 = """.replace("SOURCE_URL", SOURCE_URL)
-if 'href: "' + SOURCE_URL + '"' in content:
+""".replace("SOURCE_URL", SOURCE_URL)
+footer_new = """      }), /* @__PURE__ */ jsx("p", {
+        className: "mt-6 text-center text-muted-foreground text-xs",
+        children: /* @__PURE__ */ jsx("a", {
+          href: "SOURCE_URL",
+          target: "_blank",
+          rel: "noopener noreferrer",
+          className: "hover:underline",
+          children: "Powered by Documenso (AGPL-3.0)"
+        })
+""".replace("SOURCE_URL", SOURCE_URL)
+if _signup_end + footer_new + _tail in content:
     print("10. SSR sign-in footer already present")
-elif content.count(target_footer) == 1:
-    content = content.replace(target_footer, footer_ssr, 1)
+elif content.count(_signup_end + footer_old + _tail) == 1:
+    content = content.replace(_signup_end + footer_old + _tail, _signup_end + footer_new + _tail, 1)
+    print("10. SSR sign-in footer replaced (short form)")
+elif content.count(_signup_end + _tail) == 1:
+    content = content.replace(_signup_end + _tail, _signup_end + footer_new + _tail, 1)
     print("10. SSR sign-in footer added")
 else:
     raise SystemExit("10. SSR sign-in footer target not found — server-build.js NOT written")

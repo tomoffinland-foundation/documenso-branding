@@ -30,24 +30,30 @@ if target in signin_js and "/branding-black.png" not in signin_js:
 else:
     print("3. signin-R1dgLAzA.js already patched or target not found")
 
-# 3b. sign-in footer: AGPL-3.0 §13 source offer (ADR-017, WB-4B). Must stay identical to step 10 in patch_meta.py (SSR),
-#     otherwise React hydration fails and the sign-in page goes dead (INC-ISF-0006).
+# 3b. sign-in footer: "Powered by Documenso (AGPL-3.0)", linking to this change set — the AGPL-3.0 §13 source offer
+#     (ADR-017, WB-4B). Must stay identical to step 10 in patch_meta.py (SSR), otherwise React hydration fails and the
+#     sign-in page goes dead (INC-ISF-0006). Replaces the earlier two-part footer if present. Idempotent.
 SOURCE_URL = "https://github.com/tomoffinland-foundation/documenso-branding"
 with open(signin_path, "r") as f:
     signin_js = f.read()
 footer_target = 'className:"text-documenso-700 duration-200 hover:opacity-70"})}})})]})})});'
-footer_js = ('r.jsxs("p",{className:"mt-6 text-center text-muted-foreground text-xs",children:["Powered by Documenso (AGPL-3.0) \u00b7 ",'
-             'r.jsx("a",{href:"' + SOURCE_URL + '",target:"_blank",rel:"noopener noreferrer",className:"underline",'
-             'children:"Source of this deployment\u2019s modifications"})]})')
-if SOURCE_URL in signin_js:
+footer_old = ('r.jsxs("p",{className:"mt-6 text-center text-muted-foreground text-xs",children:["Powered by Documenso (AGPL-3.0) \u00b7 ",'
+              'r.jsx("a",{href:"' + SOURCE_URL + '",target:"_blank",rel:"noopener noreferrer",className:"underline",'
+              'children:"Source of this deployment\u2019s modifications"})]})')
+footer_js = ('r.jsx("p",{className:"mt-6 text-center text-muted-foreground text-xs",children:r.jsx("a",{href:"' + SOURCE_URL + '",'
+             'target:"_blank",rel:"noopener noreferrer",className:"hover:underline",children:"Powered by Documenso (AGPL-3.0)"})})')
+if footer_js in signin_js:
     print("3b. signin footer already present")
-elif signin_js.count(footer_target) == 1:
-    signin_js = signin_js.replace(footer_target, 'className:"text-documenso-700 duration-200 hover:opacity-70"})}})}),' + footer_js + ']})})});')
+else:
+    if footer_old in signin_js:
+        signin_js = signin_js.replace(footer_old, footer_js)
+    elif signin_js.count(footer_target) == 1:
+        signin_js = signin_js.replace(footer_target, 'className:"text-documenso-700 duration-200 hover:opacity-70"})}})}),' + footer_js + ']})})});')
+    else:
+        raise SystemExit("3b. signin footer target not found — refusing to patch (check SSR step 10 too)")
     with open(signin_path, "w") as f:
         f.write(signin_js)
-    print("3b. signin footer added")
-else:
-    raise SystemExit("3b. signin footer target not found — refusing to patch (check SSR step 10 too)")
+    print("3b. signin footer written")
 
 # 4. CSS contrast overrides
 css_overrides = """
