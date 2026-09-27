@@ -1,0 +1,61 @@
+/* ========================================================
+   TOM OF FINLAND FORCE LIGHT THEME (Q5, 2026-09-27)
+   Documenso puts class="dark" on <html> when the device is in dark mode and then uses its dark variables on pages
+   whose background the branding palette keeps white → white "Sign" on white, pale text (seen in the signing dialog).
+   The Foundation site is light only: give .dark the light values, keep primary buttons black, always show the black logo.
+   Appended last to app-tof.css / app-CEPnFH5l.css; :root repeats raise specificity above the earlier dark-mode rules.
+   ======================================================== */
+:root, :root.dark, html.dark, .dark {
+  color-scheme: light;
+  --background: 0 0% 100%;
+  --foreground: 222.2 47.4% 11.2%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 47.4% 11.2%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 47.4% 11.2%;
+  --primary: 0 0% 0%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 0 0% 0%;
+}
+/* primary buttons: black with white text in every mode (overrides the earlier dark-mode "white button" rule) */
+:root:root:root:root .bg-primary, :root:root:root:root button.bg-primary,
+:root:root:root:root .bg-documenso, :root:root:root:root button.bg-documenso,
+:root:root:root:root .dark\:bg-documenso, :root:root:root:root button.dark\:bg-documenso {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+:root:root:root:root .bg-primary:hover, :root:root:root:root button.bg-primary:hover,
+:root:root:root:root .bg-documenso:hover, :root:root:root:root button.bg-documenso:hover {
+  background-color: rgba(0, 0, 0, 0.85) !important;
+  color: #ffffff !important;
+}
+:root:root:root:root .bg-primary *, :root:root:root:root button.bg-primary *,
+:root:root:root:root .bg-documenso *, :root:root:root:root button.bg-documenso * {
+  color: #ffffff !important;
+}
+/* logo: always the black version */
+:root:root:root:root img[src*="branding-black"] { display: inline-block !important; }
+:root:root:root:root img[src*="branding-white"] { display: none !important; }
+@media (prefers-color-scheme: dark) {
+  :root:root:root:root img[src*="branding-black"] { display: inline-block !important; }
+  :root:root:root:root img[src*="branding-white"] { display: none !important; }
+}
+/* the earlier colour-fix block also forced LIGHT text/border colours in dark mode (!important) — restore the light values */
+:root:root:root:root .text-muted-foreground { color: hsl(var(--muted-foreground)) !important; }
+:root:root:root:root .text-gray-500 { color: rgb(107 114 128) !important; }
+:root:root:root:root .text-gray-600 { color: rgb(75 85 99) !important; }
+:root:root:root:root .text-gray-700 { color: rgb(55 65 81) !important; }
+:root:root:root:root .text-documenso, :root:root:root:root .text-documenso-600 { color: rgb(0 0 0) !important; }
+:root:root:root:root .text-documenso-700 { color: rgb(63 63 70) !important; }
+:root:root:root:root .text-documenso-800 { color: rgb(39 39 42) !important; }
+:root:root:root:root .text-documenso-900 { color: rgb(24 24 27) !important; }
+:root:root:root:root .bg-documenso-200 { background-color: rgb(244 244 245) !important; }
+:root:root:root:root .border-documenso-300 { border-color: rgb(228 228 231) !important; }

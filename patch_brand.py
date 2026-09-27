@@ -120,6 +120,25 @@ for css_file in ["app-tof.css", "app-CEPnFH5l.css"]:
             f.write(css.rstrip("\n") + "\n" + logo_block)
         print(f"4b. {css_file}: logo light/dark block appended")
 
+# 4c. force the light theme (Q5, 2026-09-27): dark-mode devices got Documenso's dark variables on white pages.
+#     Appended once per file, after 4b so it wins; idempotent.
+LIGHT_CSS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "force-light.css")
+LIGHT_MARK = "TOM OF FINLAND FORCE LIGHT THEME"
+with open(LIGHT_CSS, "r") as f:
+    light_block = f.read()
+for css_file in ["app-tof.css", "app-CEPnFH5l.css"]:
+    path = os.path.join(ASSETS_DIR, css_file)
+    with open(path, "r") as f:
+        css = f.read()
+    head = css.split("/* ========================================================\n   " + LIGHT_MARK)[0] if LIGHT_MARK in css else css
+    new = head.rstrip("\n") + "\n\n" + light_block
+    if new == css:
+        print(f"4c. {css_file}: force-light block already current")
+    else:
+        with open(path, "w") as f:   # in place (bind-mounted single file)
+            f.write(new)
+        print(f"4c. {css_file}: force-light block {'replaced' if LIGHT_MARK in css else 'appended'}")
+
 # 5. server-build.js
 server_path = os.path.join(ASSETS_DIR, "server-build.js")
 with open(server_path, "r") as f:
