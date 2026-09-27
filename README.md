@@ -14,7 +14,7 @@ certificates, audit logs, email or the API is changed.
 | File | Changes (applied to compiled files copied out of the v2.18.0 image) |
 |---|---|
 | `patch_brand.py` | Replaces the Documenso logo components (`branding-logo-*.js`, `BrandingLogo` in `server-build.js`) with the Foundation logo (black/white images); adds the logo above the sign-in title (`signin-*.js`); black/white primary-button contrast and the light/dark logo switch (CSS, from `logo-light-dark.css`); adds the sign-in footer linking to this repository (step 3b). |
-| `patch_meta.py` | Page metadata (title, description, OpenGraph/Twitter tags and preview image), the server-rendered sign-in logo and footer (identical to the client, step 10), keeps the `?v=` query on the root redirect. The `author` tag keeps the engine attribution: "powered by Documenso (AGPL-3.0)". |
+| `patch_meta.py` | Page metadata (title, description, OpenGraph/Twitter tags and preview image), the server-rendered sign-in logo and footer (identical to the client, step 10), the client-side head tags in `meta-ClrBL2aA.js` (identical to the server's, step 11, so the page title stays "Sign with Tom"), keeps the `?v=` query on the root redirect. The `author` tag keeps the engine attribution: "powered by Documenso (AGPL-3.0)". |
 | `logo-light-dark.css` | CSS block that shows the black logo in light mode and the white logo in dark mode. |
 
 ## How it is applied

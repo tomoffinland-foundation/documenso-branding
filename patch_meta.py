@@ -6,7 +6,7 @@ History: written on the server on 2026-09-27 (Nolan via Gemini); imported into g
 the Foundation owns the title, but the `author` tag keeps the engine attribution (hard rule 9, AGPL-3.0 appropriate notices).
 Idempotent: safe to re-run. Run after patch_brand.py, then `docker compose ... up -d documenso` (the module is loaded at start).
 """
-import re
+import os, re
 
 path = "/opt/isf/public/assets/server-build.js"
 with open(path, "r", encoding="utf-8") as f:
@@ -176,3 +176,24 @@ else:
 with open(path, "w", encoding="utf-8") as f:
     f.write(content)
 print("patch_meta: server-build.js written; author =", AUTHOR)
+
+# 11. client meta helper (meta-ClrBL2aA.js): after hydration the browser re-renders <head> from this chunk, so it must return
+#     exactly what appMetaTags in server-build.js returns (above) — otherwise the tab title flips back to "… - Documenso".
+#     Whole-file replacement of the v2.18.0 chunk (same imports: t = NEXT_PUBLIC_WEBAPP_URL, o = i18n). Idempotent.
+meta_path = os.path.join(os.path.dirname(path), "meta-ClrBL2aA.js")
+_d = "Sign with Tom - Secure and private institutional signing for the Tom of Finland Foundation."
+_kw = ("Documenso, open source, DocuSign alternative, document signing, open signing infrastructure, open-source community, "
+       "fast signing, beautiful signing, smart templates")
+meta_js = ('import{N as t}from"./app-Duq3KYQH.js";import{i as o}from"./index-CBoJQWs5.js";const a=n=>{const e="' + _d + '";'
+           'return[{title:n?`${o._(n)} - Sign with Tom`:"Sign with Tom - Secure and Private"},{name:"description",content:e},'
+           '{name:"keywords",content:"' + _kw + '"},{name:"author",content:"' + AUTHOR + '"},{name:"robots",content:"index, follow"},'
+           '{property:"og:title",content:"Sign with Tom - Secure and Private"},{property:"og:description",content:e},'
+           '{property:"og:image",content:`${t()}/opengraph-image.jpg`},{property:"og:image:secure_url",content:`${t()}/opengraph-image.jpg`},'
+           '{property:"og:image:type",content:"image/jpeg"},{property:"og:image:width",content:"1200"},{property:"og:image:height",content:"675"},'
+           '{property:"og:image:alt",content:"Tom of Finland Foundation"},{property:"og:type",content:"website"},'
+           '{name:"twitter:card",content:"summary_large_image"},{name:"twitter:title",content:"Sign with Tom - Secure and Private"},'
+           '{name:"twitter:site",content:"@tomoffinland"},{name:"twitter:description",content:e},'
+           '{name:"twitter:image",content:`${t()}/opengraph-image.jpg`}]};export{a};')
+with open(meta_path, "w", encoding="utf-8") as f:
+    f.write(meta_js)
+print("11. meta-ClrBL2aA.js written (client head = server head)")
