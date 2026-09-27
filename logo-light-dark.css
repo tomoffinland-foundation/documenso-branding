@@ -1,0 +1,71 @@
+/* ========================================================
+   TOM OF FINLAND LOGO LIGHT / DARK MODE DYNAMIC SWITCHING
+   ======================================================== */
+/* 1. Base / Light Mode */
+img[src*="branding-black"],
+.branding-logo-black {
+  display: inline-block !important;
+}
+img[src*="branding-white"],
+.branding-logo-white {
+  display: none !important;
+}
+
+/* 2. Explicit Dark Mode via class or data attribute */
+html.dark img[src*="branding-black"],
+.dark img[src*="branding-black"],
+:is(.dark:not(.dark-mode-disabled) *) img[src*="branding-black"],
+[data-theme="dark"] img[src*="branding-black"],
+:is([data-theme="dark"] *) img[src*="branding-black"] {
+  display: none !important;
+}
+
+html.dark img[src*="branding-white"],
+.dark img[src*="branding-white"],
+:is(.dark:not(.dark-mode-disabled) *) img[src*="branding-white"],
+[data-theme="dark"] img[src*="branding-white"],
+:is([data-theme="dark"] *) img[src*="branding-white"] {
+  display: inline-block !important;
+}
+
+/* 3. System Dark Mode (prefers-color-scheme: dark) unless explicitly set to light */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not([data-theme="light"]) img[src*="branding-black"],
+  html:not(.light):not([data-theme="light"]) img[src*="branding-black"] {
+    display: none !important;
+  }
+  :root:not(.light):not([data-theme="light"]) img[src*="branding-white"],
+  html:not(.light):not([data-theme="light"]) img[src*="branding-white"] {
+    display: inline-block !important;
+  }
+  :root:not(.light):not([data-theme="light"]) .dark\:hidden,
+  html:not(.light):not([data-theme="light"]) .dark\:hidden {
+    display: none !important;
+  }
+  :root:not(.light):not([data-theme="light"]) .dark\:block,
+  html:not(.light):not([data-theme="light"]) .dark\:block {
+    display: block !important;
+  }
+}
+
+/* 4. Tailwind utility classes dark:hidden and dark:block */
+html.dark .dark\:hidden,
+.dark .dark\:hidden,
+:is(.dark:not(.dark-mode-disabled) *) .dark\:hidden,
+[data-theme="dark"] .dark\:hidden {
+  display: none !important;
+}
+
+html.dark .dark\:block,
+.dark .dark\:block,
+:is(.dark:not(.dark-mode-disabled) *) .dark\:block,
+[data-theme="dark"] .dark\:block {
+  display: block !important;
+}
+
+html.dark .dark\:inline-block,
+.dark .dark\:inline-block,
+:is(.dark:not(.dark-mode-disabled) *) .dark\:inline-block,
+[data-theme="dark"] .dark\:inline-block {
+  display: inline-block !important;
+}
