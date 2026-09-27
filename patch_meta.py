@@ -134,6 +134,45 @@ replacement_signin = """      children: [signupError && /* @__PURE__ */ jsx(Aler
 if target_signin in content:
     content = content.replace(target_signin, replacement_signin, 1)
 
+# 10. server-rendered sign-in footer: AGPL-3.0 §13 source offer (ADR-017, WB-4B). Identical to step 3b in patch_brand.py.
+SOURCE_URL = "https://github.com/tomoffinland-foundation/documenso-branding"
+target_footer = """                className: "text-documenso-700 duration-200 hover:opacity-70"
+              })
+            }
+          }
+        })
+      })]
+    })
+  });
+});
+const route107 = """
+footer_ssr = """                className: "text-documenso-700 duration-200 hover:opacity-70"
+              })
+            }
+          }
+        })
+      }), /* @__PURE__ */ jsxs("p", {
+        className: "mt-6 text-center text-muted-foreground text-xs",
+        children: ["Powered by Documenso (AGPL-3.0) \u00b7 ", /* @__PURE__ */ jsx("a", {
+          href: "SOURCE_URL",
+          target: "_blank",
+          rel: "noopener noreferrer",
+          className: "underline",
+          children: "Source of this deployment\u2019s modifications"
+        })]
+      })]
+    })
+  });
+});
+const route107 = """.replace("SOURCE_URL", SOURCE_URL)
+if 'href: "' + SOURCE_URL + '"' in content:
+    print("10. SSR sign-in footer already present")
+elif content.count(target_footer) == 1:
+    content = content.replace(target_footer, footer_ssr, 1)
+    print("10. SSR sign-in footer added")
+else:
+    raise SystemExit("10. SSR sign-in footer target not found — server-build.js NOT written")
+
 with open(path, "w", encoding="utf-8") as f:
     f.write(content)
 print("patch_meta: server-build.js written; author =", AUTHOR)
